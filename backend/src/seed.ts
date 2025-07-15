@@ -27,6 +27,7 @@ async function main() {
             role: 'ADMIN',
         },
     });
+    console.log('👤 Created admin user:', admin.email);
 
     // Create venue owner
     const venuePasswordHash = await bcrypt.hash('venue123', 12);
@@ -64,6 +65,7 @@ async function main() {
             role: 'READER',
         },
     });
+    console.log('👤 Created reader user:', reader.email);
 
     console.log('👥 Created users');
 
@@ -128,6 +130,7 @@ async function main() {
             },
         }),
     ]);
+    console.log('🎭 Created events:', events.map(e => e.title).join(', '));
 
     console.log('🎭 Created events');
 

@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "build": "tsc",
+    "build": "tsc && prisma generate",
     "start": "node dist/index.js",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -17,7 +17,8 @@
     "db:reset": "prisma migrate reset",
     "db:seed": "ts-node src/seed.ts",
     "db:setup": "npm run db:generate && npm run db:push && npm run db:seed",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "postinstall": "prisma generate"
   },
   "keywords": [
     "stratford",
