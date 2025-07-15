@@ -1,7 +1,21 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Calendar, Clock, MapPin, DollarSign, Music } from 'lucide-react'
-import { Event, EVENT_CATEGORIES } from '@stratford-music/shared'
+
+// Simple Event interface for now
+interface Event {
+    id: string
+    title: string
+    description: string
+    startTime: Date
+    endTime: Date
+    category: string
+    price?: number
+    venue?: {
+        id: string
+        name: string
+    }
+}
 
 interface EventCardProps {
     event: Event
@@ -32,8 +46,16 @@ const EventCard: React.FC<EventCardProps> = ({
     }
 
     const getCategoryLabel = (category: string) => {
-        const categoryData = EVENT_CATEGORIES.find(cat => cat.value === category)
-        return categoryData?.label || category
+        const categories: Record<string, string> = {
+            'LIVE_MUSIC': 'Live Music',
+            'STANDUP_COMEDY': 'Standup Comedy',
+            'CLASSICAL_MUSIC': 'Classical Music',
+            'THEATRE': 'Theatre',
+            'ART_GALLERY': 'Art Gallery',
+            'LITERATURE': 'Literature',
+            'RESTAURANT_EVENT': 'Restaurant Event'
+        }
+        return categories[category] || category
     }
 
     const getCategoryIcon = (category: string) => {

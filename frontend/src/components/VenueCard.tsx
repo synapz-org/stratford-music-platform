@@ -1,7 +1,18 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { MapPin, Phone, Globe, Users } from 'lucide-react'
-import { Venue } from '@stratford-music/shared'
+
+// Simple Venue interface for now
+interface Venue {
+    id: string
+    name: string
+    description?: string
+    address: string
+    phone?: string
+    website?: string
+    capacity?: number
+    amenities?: string[]
+}
 
 interface VenueCardProps {
     venue: Venue
