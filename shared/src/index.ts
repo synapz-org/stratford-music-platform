@@ -5,22 +5,12 @@ export * from './types';
 export * from './api';
 
 // Re-export commonly used types for convenience
-export type {
+export {
     User,
-    Event,
     Venue,
-    MagazineIssue,
-    Article,
+    Event,
     Playlist,
     Advertisement,
-    ApiResponse,
-    PaginatedResponse,
-} from './types';
-
-export {
-    API_BASE_URL,
-    API_ENDPOINTS,
-    apiClient,
-    api,
-    ApiError,
-} from './api'; 
+    // ...other types
+} from './types'
+export { api, apiClient, ApiError } from './api' 
