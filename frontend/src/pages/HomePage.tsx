@@ -1,38 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { Calendar, MapPin, Music, ArrowRight, Play, Users } from 'lucide-react'
-import { Event } from '@stratford-music/shared'
-import { api } from '@stratford-music/shared'
-import EventCard from '../components/EventCard'
 
 const HomePage: React.FC = () => {
-    const [todayEvents, setTodayEvents] = useState<Event[]>([])
-    const [featuredEvents, setFeaturedEvents] = useState<Event[]>([])
-    const [isLoading, setIsLoading] = useState(true)
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [todayResponse, featuredResponse] = await Promise.all([
-                    api.events.getToday(),
-                    api.events.getAll({ limit: 6, status: 'PUBLISHED' })
-                ])
-
-                const todayData = todayResponse as any
-                const featuredData = featuredResponse as any
-
-                setTodayEvents(todayData.data.events)
-                setFeaturedEvents(featuredData.data.events)
-            } catch (error) {
-                console.error('Error fetching data:', error)
-            } finally {
-                setIsLoading(false)
-            }
-        }
-
-        fetchData()
-    }, [])
-
     return (
         <div className="min-h-screen">
             {/* Hero Section */}
@@ -71,54 +41,6 @@ const HomePage: React.FC = () => {
                 <div className="absolute top-10 left-10 w-20 h-20 bg-white opacity-10 rounded-full"></div>
                 <div className="absolute bottom-20 right-20 w-32 h-32 bg-secondary-400 opacity-20 rounded-full"></div>
                 <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-accent-400 opacity-30 rounded-full"></div>
-            </section>
-
-            {/* Today's Events */}
-            <section className="py-16 bg-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                            Today's Events
-                        </h2>
-                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                            Don't miss out on what's happening in Stratford today. From live music to theatre performances.
-                        </p>
-                    </div>
-
-                    {isLoading ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {[...Array(3)].map((_, i) => (
-                                <div key={i} className="card animate-pulse">
-                                    <div className="h-48 bg-gray-200 rounded-t-lg"></div>
-                                    <div className="p-6">
-                                        <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                                        <div className="h-3 bg-gray-200 rounded mb-4"></div>
-                                        <div className="h-3 bg-gray-200 rounded w-2/3"></div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : todayEvents.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {todayEvents.slice(0, 3).map((event) => (
-                                <EventCard key={event.id} event={event} />
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="text-center py-12">
-                            <Music className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Events Today</h3>
-                            <p className="text-gray-600 mb-6">Check out upcoming events or browse our venues.</p>
-                            <Link
-                                to="/events"
-                                className="btn-primary inline-flex items-center"
-                            >
-                                Browse All Events
-                                <ArrowRight className="w-4 h-4 ml-2" />
-                            </Link>
-                        </div>
-                    )}
-                </div>
             </section>
 
             {/* Features Section */}
@@ -164,50 +86,6 @@ const HomePage: React.FC = () => {
                             </p>
                         </div>
                     </div>
-                </div>
-            </section>
-
-            {/* Featured Events */}
-            <section className="py-16 bg-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center mb-8">
-                        <div>
-                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                                Featured Events
-                            </h2>
-                            <p className="text-lg text-gray-600">
-                                Handpicked events you won't want to miss
-                            </p>
-                        </div>
-                        <Link
-                            to="/events"
-                            className="btn-outline inline-flex items-center"
-                        >
-                            View All
-                            <ArrowRight className="w-4 h-4 ml-2" />
-                        </Link>
-                    </div>
-
-                    {isLoading ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {[...Array(6)].map((_, i) => (
-                                <div key={i} className="card animate-pulse">
-                                    <div className="h-48 bg-gray-200 rounded-t-lg"></div>
-                                    <div className="p-6">
-                                        <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                                        <div className="h-3 bg-gray-200 rounded mb-4"></div>
-                                        <div className="h-3 bg-gray-200 rounded w-2/3"></div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {featuredEvents.map((event) => (
-                                <EventCard key={event.id} event={event} />
-                            ))}
-                        </div>
-                    )}
                 </div>
             </section>
 

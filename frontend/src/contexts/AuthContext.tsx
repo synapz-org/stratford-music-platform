@@ -1,6 +1,22 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react'
-import { User, LoginRequest, RegisterRequest } from '@stratford-music/shared'
-import { api } from '@stratford-music/shared'
+
+// Simple types for now
+interface User {
+    id: string
+    email: string
+    name?: string
+}
+
+interface LoginRequest {
+    email: string
+    password: string
+}
+
+interface RegisterRequest {
+    email: string
+    password: string
+    name: string
+}
 
 interface AuthState {
     user: User | null
@@ -88,35 +104,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, [state.token])
 
-    useEffect(() => {
-        // Check if user is authenticated on app load
-        const checkAuth = async () => {
-            if (state.token && !state.user) {
-                try {
-                    dispatch({ type: 'AUTH_START' })
-                    const response = await api.auth.getProfile()
-                    const responseData = response as any
-                    dispatch({
-                        type: 'AUTH_SUCCESS',
-                        payload: { user: responseData.data.user, token: state.token! },
-                    })
-                } catch (error) {
-                    dispatch({ type: 'AUTH_FAILURE', payload: 'Session expired' })
-                }
-            }
-        }
-
-        checkAuth()
-    }, [])
-
     const login = async (credentials: LoginRequest) => {
         try {
             dispatch({ type: 'AUTH_START' })
-            const response = await api.auth.login(credentials)
-            const responseData = response as any
+            // Mock login for now
+            const mockUser: User = {
+                id: '1',
+                email: credentials.email,
+                name: 'Test User'
+            }
+            const mockToken = 'mock-token-' + Date.now()
+
             dispatch({
                 type: 'AUTH_SUCCESS',
-                payload: { user: responseData.data.user, token: responseData.data.token },
+                payload: { user: mockUser, token: mockToken },
             })
         } catch (error: any) {
             dispatch({
@@ -129,11 +130,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const register = async (userData: RegisterRequest) => {
         try {
             dispatch({ type: 'AUTH_START' })
-            const response = await api.auth.register(userData)
-            const responseData = response as any
+            // Mock registration for now
+            const mockUser: User = {
+                id: '1',
+                email: userData.email,
+                name: userData.name
+            }
+            const mockToken = 'mock-token-' + Date.now()
+
             dispatch({
                 type: 'AUTH_SUCCESS',
-                payload: { user: responseData.data.user, token: responseData.data.token },
+                payload: { user: mockUser, token: mockToken },
             })
         } catch (error: any) {
             dispatch({
@@ -153,11 +160,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const updateProfile = async (data: Partial<User>) => {
         try {
-            const response = await api.auth.updateProfile(data)
-            const responseData = response as any
+            // Mock profile update for now
+            const updatedUser = { ...state.user, ...data } as User
             dispatch({
                 type: 'AUTH_SUCCESS',
-                payload: { user: responseData.data.user, token: state.token! },
+                payload: { user: updatedUser, token: state.token! },
             })
         } catch (error: any) {
             dispatch({
