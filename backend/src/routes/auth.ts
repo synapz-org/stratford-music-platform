@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
@@ -14,7 +14,7 @@ router.post('/register', [
     body('password').isLength({ min: 6 }),
     body('name').optional().trim().isLength({ min: 1 }),
     body('role').optional().isIn(['ADMIN', 'VENUE', 'ARTIST', 'READER']),
-], async (req, res) => {
+], async (req: Request, res: Response) => {
     try {
         // Check validation errors
         const errors = validationResult(req);
@@ -88,7 +88,7 @@ router.post('/register', [
 router.post('/login', [
     body('email').isEmail().normalizeEmail(),
     body('password').notEmpty(),
-], async (req, res) => {
+], async (req: Request, res: Response) => {
     try {
         // Check validation errors
         const errors = validationResult(req);
@@ -152,7 +152,7 @@ router.post('/login', [
 });
 
 // Get current user profile
-router.get('/me', authenticateToken, async (req: AuthRequest, res) => {
+router.get('/me', authenticateToken, async (req: AuthRequest, res: Response) => {
     try {
         const user = await prisma.user.findUnique({
             where: { id: req.user!.userId },
@@ -195,7 +195,7 @@ router.put('/me', authenticateToken, [
     body('bio').optional().trim(),
     body('phone').optional().trim(),
     body('address').optional().trim(),
-], async (req: AuthRequest, res) => {
+], async (req: AuthRequest, res: Response) => {
     try {
         // Check validation errors
         const errors = validationResult(req);

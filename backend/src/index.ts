@@ -57,8 +57,8 @@ app.get('/api/health', (req, res) => {
     res.json({
         status: 'OK',
         timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV || 'development',
-        version: process.env.npm_package_version || '1.0.0',
+        environment: process.env['NODE_ENV'] || 'development',
+        version: process.env['npm_package_version'] || '1.0.0',
     });
 });
 
@@ -81,7 +81,7 @@ app.use(errorHandler);
 app.listen(PORT, () => {
     console.log(`🎵 Stratford Music Platform API running on port ${PORT}`);
     console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
-    console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🌍 Environment: ${process.env['NODE_ENV'] || 'development'}`);
 });
 
 export default app; 

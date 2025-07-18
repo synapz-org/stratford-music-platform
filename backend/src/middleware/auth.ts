@@ -47,7 +47,11 @@ export const authenticateToken = async (
             });
         }
 
-        req.user = user;
+        req.user = {
+            userId: user.id,
+            email: user.email,
+            role: user.role
+        };
         next();
     } catch (error) {
         return res.status(403).json({
@@ -74,6 +78,7 @@ export const requireRole = (roles: string[]) => {
         }
 
         next();
+        return;
     };
 };
 
@@ -103,6 +108,7 @@ export const requireVenueOwnership = async (
 
         (req as any).venue = venue;
         next();
+        return;
     } catch (error) {
         return res.status(500).json({
             success: false,
