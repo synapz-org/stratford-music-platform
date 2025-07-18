@@ -75,6 +75,7 @@ router.post('/register', [
                 token,
             },
         });
+        return;
     } catch (error) {
         console.error('Registration error:', error);
         res.status(500).json({
@@ -83,6 +84,8 @@ router.post('/register', [
         });
         return;
     }
+    // Explicit return at end
+    return;
 });
 
 // Login user
@@ -143,6 +146,7 @@ router.post('/login', [
                 token,
             },
         });
+        return;
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({
@@ -151,6 +155,8 @@ router.post('/login', [
         });
         return;
     }
+    // Explicit return at end
+    return;
 });
 
 // Get current user profile
@@ -182,6 +188,7 @@ router.get('/me', authenticateToken, async (req: AuthRequest, res: Response) => 
             success: true,
             data: { user },
         });
+        return;
     } catch (error) {
         console.error('Get profile error:', error);
         res.status(500).json({
@@ -190,6 +197,8 @@ router.get('/me', authenticateToken, async (req: AuthRequest, res: Response) => 
         });
         return;
     }
+    // Explicit return at end
+    return;
 });
 
 // Update user profile
@@ -237,6 +246,7 @@ router.put('/me', authenticateToken, [
             success: true,
             data: { user: updatedUser },
         });
+        return;
     } catch (error) {
         console.error('Update profile error:', error);
         res.status(500).json({
@@ -245,6 +255,8 @@ router.put('/me', authenticateToken, [
         });
         return;
     }
+    // Explicit return at end
+    return;
 });
 
 export default router; 
