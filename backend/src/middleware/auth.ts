@@ -59,6 +59,8 @@ export const authenticateToken = async (
             error: 'Invalid token'
         });
     }
+    // Add explicit return to satisfy TypeScript
+    return;
 };
 
 export const requireRole = (roles: string[]) => {

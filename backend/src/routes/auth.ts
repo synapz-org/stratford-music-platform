@@ -81,6 +81,7 @@ router.post('/register', [
             success: false,
             error: 'Registration failed',
         });
+        return;
     }
 });
 
@@ -148,6 +149,7 @@ router.post('/login', [
             success: false,
             error: 'Login failed',
         });
+        return;
     }
 });
 
@@ -186,6 +188,7 @@ router.get('/me', authenticateToken, async (req: AuthRequest, res: Response) => 
             success: false,
             error: 'Failed to get profile',
         });
+        return;
     }
 });
 
@@ -240,6 +243,7 @@ router.put('/me', authenticateToken, [
             success: false,
             error: 'Failed to update profile',
         });
+        return;
     }
 });
 
