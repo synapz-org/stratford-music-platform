@@ -6,8 +6,8 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install dependencies
-RUN npm install --omit=dev
+# Install all dependencies (including dev dependencies for build)
+RUN npm install
 
 # Generate Prisma client
 RUN npx prisma generate
@@ -17,6 +17,9 @@ COPY . .
 
 # Build the application
 RUN npm run build
+
+# Remove dev dependencies to reduce image size
+RUN npm prune --omit=dev
 
 # Expose port
 EXPOSE 3001
