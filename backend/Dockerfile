@@ -2,6 +2,9 @@ FROM node:18-alpine
 
 WORKDIR /app
 
+# Install OpenSSL and other dependencies
+RUN apk add --no-cache openssl curl
+
 # Copy package files first for better caching
 COPY package*.json ./
 COPY prisma ./prisma/
