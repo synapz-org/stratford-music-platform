@@ -59,6 +59,16 @@ app.get('/api/health', (req, res) => {
         timestamp: new Date().toISOString(),
         environment: process.env['NODE_ENV'] || 'development',
         version: process.env['npm_package_version'] || '1.0.0',
+        database: process.env['DATABASE_URL'] ? 'Connected' : 'Not configured',
+        port: PORT,
+    });
+});
+
+// Simple test endpoint
+app.get('/api/test', (req, res) => {
+    res.json({
+        message: 'API is working!',
+        timestamp: new Date().toISOString(),
     });
 });
 
@@ -82,6 +92,11 @@ app.listen(PORT, () => {
     console.log(`🎵 Stratford Music Platform API running on port ${PORT}`);
     console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
     console.log(`🌍 Environment: ${process.env['NODE_ENV'] || 'development'}`);
+    console.log(`🔗 Database URL: ${process.env['DATABASE_URL'] ? 'Set' : 'NOT SET'}`);
+    console.log(`🔑 JWT Secret: ${process.env['JWT_SECRET'] ? 'Set' : 'NOT SET'}`);
+}).on('error', (error) => {
+    console.error('❌ Server failed to start:', error);
+    process.exit(1);
 });
 
 export default app; 
