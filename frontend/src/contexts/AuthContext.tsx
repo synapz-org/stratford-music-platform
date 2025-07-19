@@ -1,22 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react'
-
-// Simple types for now
-interface User {
-    id: string
-    email: string
-    name?: string
-}
-
-interface LoginRequest {
-    email: string
-    password: string
-}
-
-interface RegisterRequest {
-    email: string
-    password: string
-    name: string
-}
+import { apiClient } from '@/utils/api'
+import type { User, LoginRequest, RegisterRequest, AuthResponse, ApiResponse } from '@/types/auth'
 
 interface AuthState {
     user: User | null
@@ -96,61 +80,100 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [state, dispatch] = useReducer(authReducer, initialState)
 
     useEffect(() => {
-        // Set token in localStorage if it exists
+        // Set token in localStorage and API client
         if (state.token) {
             localStorage.setItem('token', state.token)
+            apiClient.setToken(state.token)
         } else {
             localStorage.removeItem('token')
+            apiClient.clearToken()
         }
     }, [state.token])
+
+    // Initialize user from token on mount
+    useEffect(() => {
+        const initializeAuth = async () => {
+            const token = localStorage.getItem('token')
+            if (token) {
+                try {
+                    apiClient.setToken(token)
+                    const response: ApiResponse<{ user: User }> = await apiClient.get('/auth/me')
+
+                    if (response.success && response.data) {
+                        dispatch({
+                            type: 'AUTH_SUCCESS',
+                            payload: { user: response.data.user, token },
+                        })
+                    } else {
+                        // Invalid token, clear it
+                        localStorage.removeItem('token')
+                        apiClient.clearToken()
+                    }
+                } catch (error) {
+                    // Invalid token, clear it
+                    localStorage.removeItem('token')
+                    apiClient.clearToken()
+                }
+            }
+        }
+
+        initializeAuth()
+    }, [])
 
     const login = async (credentials: LoginRequest) => {
         try {
             dispatch({ type: 'AUTH_START' })
-            // Mock login for now
-            const mockUser: User = {
-                id: '1',
-                email: credentials.email,
-                name: 'Test User'
-            }
-            const mockToken = 'mock-token-' + Date.now()
 
-            dispatch({
-                type: 'AUTH_SUCCESS',
-                payload: { user: mockUser, token: mockToken },
-            })
+            const response: ApiResponse<AuthResponse> = await apiClient.post('/auth/login', credentials)
+
+            if (response.success && response.data) {
+                const { user, token } = response.data
+                apiClient.setToken(token)
+
+                dispatch({
+                    type: 'AUTH_SUCCESS',
+                    payload: { user, token },
+                })
+            } else {
+                throw new Error(response.error || 'Login failed')
+            }
         } catch (error: any) {
             dispatch({
                 type: 'AUTH_FAILURE',
                 payload: error.message || 'Login failed',
             })
+            throw error
         }
     }
 
     const register = async (userData: RegisterRequest) => {
         try {
             dispatch({ type: 'AUTH_START' })
-            // Mock registration for now
-            const mockUser: User = {
-                id: '1',
-                email: userData.email,
-                name: userData.name
-            }
-            const mockToken = 'mock-token-' + Date.now()
 
-            dispatch({
-                type: 'AUTH_SUCCESS',
-                payload: { user: mockUser, token: mockToken },
-            })
+            const response: ApiResponse<AuthResponse> = await apiClient.post('/auth/register', userData)
+
+            if (response.success && response.data) {
+                const { user, token } = response.data
+                apiClient.setToken(token)
+
+                dispatch({
+                    type: 'AUTH_SUCCESS',
+                    payload: { user, token },
+                })
+            } else {
+                throw new Error(response.error || 'Registration failed')
+            }
         } catch (error: any) {
             dispatch({
                 type: 'AUTH_FAILURE',
                 payload: error.message || 'Registration failed',
             })
+            throw error
         }
     }
 
     const logout = () => {
+        apiClient.clearToken()
         dispatch({ type: 'AUTH_LOGOUT' })
     }
 
@@ -160,17 +183,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const updateProfile = async (data: Partial<User>) => {
         try {
-            // Mock profile update for now
-            const updatedUser = { ...state.user, ...data } as User
-            dispatch({
-                type: 'AUTH_SUCCESS',
-                payload: { user: updatedUser, token: state.token! },
-            })
+            dispatch({ type: 'AUTH_START' })
+
+            const response: ApiResponse<{ user: User }> = await apiClient.put('/auth/me', data)
+
+            if (response.success && response.data) {
+                dispatch({
+                    type: 'AUTH_SUCCESS',
+                    payload: { user: response.data.user, token: state.token! },
+                })
+            } else {
+                throw new Error(response.error || 'Profile update failed')
+            }
         } catch (error: any) {
             dispatch({
                 type: 'AUTH_FAILURE',
                 payload: error.message || 'Profile update failed',
             })
+            throw error
         }
     }
 
