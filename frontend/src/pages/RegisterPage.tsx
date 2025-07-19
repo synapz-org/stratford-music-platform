@@ -4,6 +4,7 @@ import { Mail, Lock, Eye, EyeOff, User, UserCheck } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import toast from 'react-hot-toast'
 import LoadingSpinner from '@/components/LoadingSpinner'
+import ApiTestButton from '@/components/ApiTestButton'
 import type { UserRole } from '@/types/auth'
 
 const RegisterPage: React.FC = () => {
@@ -115,6 +116,9 @@ const RegisterPage: React.FC = () => {
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="card">
+                    <div className="mb-6">
+                        <ApiTestButton />
+                    </div>
                     <form onSubmit={handleSubmit} className="space-y-6" noValidate>
                         {/* Name Field */}
                         <div>
