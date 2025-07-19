@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://stratford-music-platform-production.up.railway.app/api'
 
 export class ApiError extends Error {
     constructor(
@@ -67,8 +67,18 @@ export class ApiClient {
             },
         }
 
-        const response = await fetch(url, config)
-        return parseApiResponse<T>(response)
+        console.log('Making API request to:', url)
+        console.log('Request config:', config)
+
+        try {
+            const response = await fetch(url, config)
+            console.log('Response status:', response.status)
+            console.log('Response headers:', Object.fromEntries(response.headers.entries()))
+            return parseApiResponse<T>(response)
+        } catch (error) {
+            console.error('API request failed:', error)
+            throw error
+        }
     }
 
     async get<T>(endpoint: string): Promise<T> {

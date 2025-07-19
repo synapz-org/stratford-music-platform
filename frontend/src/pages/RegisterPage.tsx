@@ -65,6 +65,13 @@ const RegisterPage: React.FC = () => {
         setIsLoading(true)
 
         try {
+            console.log('Attempting registration with:', {
+                email: email.trim(),
+                name: name.trim(),
+                role,
+                apiUrl: 'https://stratford-music-platform-production.up.railway.app/api'
+            })
+            
             await register({
                 email: email.trim(),
                 password,
@@ -74,7 +81,16 @@ const RegisterPage: React.FC = () => {
             toast.success('Welcome to Stratford Music Platform!')
             navigate('/')
         } catch (error: any) {
-            toast.error(error.message || 'Registration failed')
+            console.error('Registration error:', error)
+            if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                toast.error('Network error: Unable to connect to server. Please check your connection.')
+            } else if (error.status === 400) {
+                toast.error(error.message || 'Invalid registration data')
+            } else if (error.status === 500) {
+                toast.error('Server error: Please try again later')
+            } else {
+                toast.error(error.message || 'Registration failed')
+            }
         } finally {
             setIsLoading(false)
         }
